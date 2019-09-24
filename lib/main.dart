@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_authentication/homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final PhoneVerificationCompleted verifiedSuccess = (AuthCredential user) {
       print('verified');
+      // Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     };
 
     final PhoneVerificationFailed verifiFailed = (AuthException exception) {
@@ -80,7 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   FirebaseAuth.instance.currentUser().then((user) {
                     if (user != null) {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushReplacementNamed('/homePage');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return HomePage();
+                          },
+                        ),
+                      );
                     } else {
                       Navigator.of(context).pop();
                       signIn();
@@ -96,7 +105,19 @@ class _MyHomePageState extends State<MyHomePage> {
   signIn() async {
     final AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: verificationId, smsCode: smsCode);
-    Navigator.of(context).pushReplacementNamed('/homepage');
+    await FirebaseAuth.instance.signInWithCredential(credential).then((user) {
+      Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (BuildContext context) => HomePage()))
+          .catchError((e) => print(e));
+    });
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return HomePage();
+        },
+      ),
+    );
   }
 
   @override
