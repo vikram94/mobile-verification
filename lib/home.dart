@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_authentication/event_model.dart';
 import 'package:mobile_authentication/request_model.dart';
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
     Stream<QuerySnapshot> snapshots = Firestore.instance
         .collection("request")
         .where('eventId', isEqualTo: '-LlDDWRv4-lopF3gu_u2')
-        .where('userId', isEqualTo: 'Ro85GcrX7LdOJUTYbOop8aPcNGH2')
+        .where('userId', isEqualTo: 'fVSbv23DYThTWspoJIotHfjjv0s2')
         .snapshots();
 
     if (offset != null) {
@@ -81,6 +82,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  _signedOut() {
+    return FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -89,7 +94,18 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           new Text("data"),
           new RaisedButton(
+            child: new Text(
+              'reqEvent',
+              style: new TextStyle(fontSize: 17.0, color: Colors.white),
+            ),
             onPressed: apicall,
+          ),
+          new RaisedButton(
+            child: new Text(
+              'LogOut',
+              style: new TextStyle(fontSize: 17.0, color: Colors.white),
+            ),
+            onPressed: _signedOut,
           )
         ],
       ),
